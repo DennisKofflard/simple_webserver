@@ -10,8 +10,8 @@
 #include <arpa/inet.h>
 #define VERSION 23
 #define BUFSIZE 8096
-#define PATH ""
-#define FILENAME ""
+#define PATH "./testscript.sh"
+#define FILENAME "testscript.sh"
 
 
 void logger(char *s1, char *s2)        
@@ -29,9 +29,7 @@ void logger(char *s1, char *s2)
 /* this is a child web server process, so we can exit on errors */
 void web(int fd)
 {
-	int j, file_fd, buflen;
-	long i, ret, len;
-	char * fstr;
+	long ret;
 	static char buffer[BUFSIZE+1]; /* static so zero filled */
 
 	ret =read(fd,buffer,BUFSIZE); 	/* read Web request in one go */
@@ -47,7 +45,7 @@ void web(int fd)
 	
 	
 	
-	(void)sprintf(buffer,"HTTP/1.1 200 OK\nServer: nweb_yunia_modification\nContent-Length: %ld\nConnection: close\nContent-Type: text/html\n\n", 0); /* Header + a blank line */
+	(void)sprintf(buffer,"HTTP/1.1 200 OK\nServer: nweb_yunia_modification\nContent-Length:0\nConnection: close\nContent-Type: text/html\n\n"); /* Header + a blank line */
 	(void)write(fd,buffer,strlen(buffer));
 
 	
