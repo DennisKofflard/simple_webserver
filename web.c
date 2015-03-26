@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-//#include <errno.h>
 #include <string.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -11,6 +10,9 @@
 #include <arpa/inet.h>
 #define VERSION 23
 #define BUFSIZE 8096
+#define PATH ""
+#define FILENAME ""
+
 
 void logger(char *s1, char *s2)        
 {
@@ -18,9 +20,8 @@ void logger(char *s1, char *s2)
 	char logbuffer[BUFSIZE*2];
 	
 	if((fd = open("nweb.log", O_CREAT| O_WRONLY | O_APPEND,0644)) >= 0) {
-		sprintf(logbuffer, "s1: %s\ns2: %s\n", s1, s2);
+		sprintf(logbuffer, "s1: %s\ns2: %s\n\n", s1, s2);
 		(void)write(fd,logbuffer,strlen(logbuffer)); 
-		(void)write(fd,"\n",1);      
 		(void)close(fd);
 	}
 }
@@ -41,11 +42,23 @@ void web(int fd)
 		buffer[ret]=0;		/* terminate the buffer */
 	else buffer[0]=0;
 	
+	//don't care about the request, always do the same.
+	//do stuff here
+	
+	
+	
 	(void)sprintf(buffer,"HTTP/1.1 200 OK\nServer: nweb_yunia_modification\nContent-Length: %ld\nConnection: close\nContent-Type: text/html\n\n", 0); /* Header + a blank line */
 	(void)write(fd,buffer,strlen(buffer));
 
+	
 	sleep(1);	/* allow socket to drain before signalling the socket is closed */
 	close(fd);
+	
+	//execute script
+	execl(PATH, FILENAME, NULL);
+	//if programflow arrives here there was an error,
+	//log it and exit.
+	logger("execl", "function returned");
 	exit(1);
 }
 
